@@ -95,7 +95,7 @@ def make_empty_grids():
     """
     num_long = int(ceil((max_long - min_long) / grid_len_long)) + 1
     num_lati = int(ceil((max_lati - min_lati) / grid_len_lati)) + 1
-    grids = [[set() for i in xrange(num_lati)] for j in xrange(num_long)]
+    grids = [[dict() for i in xrange(num_lati)] for j in xrange(num_long)]
     return grids
     
 def process_routes(routes, grid):
@@ -107,7 +107,8 @@ def process_routes(routes, grid):
         for i, site in enumerate(route):      
             x, y = grid_index(site)
             for longi, lati in neighbor_loc(x, y):
-                grid[longi][lati].add((route_no, i))
+                grid[longi][lati].setdefault(route_no, set())
+                grid[longi][lati][route_no].add(i)
 
 def neighbor_loc(x, y):
     """
@@ -151,10 +152,11 @@ def filter_by_grids(vehicle, routes, grids):
         x, y = grid_index(location)
         if (x, y) in used: continue
         used.add((x, y))
-        for route_no, site_no in grids[x][y]:
-            site_loc = routes.get_route(route_no).get_location(site_no)
-            if dist(site_loc, location) < match_dist:
-                matched[route_no].add(site_no)
+        for route_no, sites in grids[x][y].iteritems():
+            for site_no in sites:
+                site_loc = routes.get_route(route_no).get_location(site_no)
+                if dist(site_loc, location) < match_dist:
+                    matched[route_no].add(site_no)
     candi_routes = Routes()
     for route_no, sites in matched.iteritems():
         if len(sites) / routes.get_route_len(route_no) >= match_thres:
@@ -165,8 +167,7 @@ def subset_match(vehicle, route, start, end):
     """
     return whether vehicle[start..end] match route
     """
-    ya_grid = 
-    
+    pass
 
 def split_cands(routes):
     """
@@ -188,6 +189,9 @@ if __name__ == "__main__":
     vehicles = read_vehicles(configuration.database, configuration.query_no)
     if configuration.debug_mode:
         check_order(vehicles)
+    for v in vehicles:
+        for r in filter_by_grids(v, routes, grids):
+            print r.get_no()
     for vehicle in vehicles:
         pass
     

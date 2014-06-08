@@ -16,7 +16,7 @@ import os
 database = os.path.normpath("../data/Route_Matching.db")
 lines_file =  os.path.normpath("../data/lines.csv")
 # "all" or [no_1, no_2]
-query_no = "all"
+query_no = [13816726263]
 min_long = 121.1
 max_long = 121.9
 min_lati = 31.1
