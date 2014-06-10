@@ -28,10 +28,10 @@ class Route:
     def get_longitude(self, i):
         return self.sites[i][0]
         
-    def get_dest(self):
+    def get_dest_loc(self):
         return self.get_location(-1)
     
-    def get_start(self):
+    def get_start_loc(self):
         return self.get_location(0)
         
     def __len__(self):
