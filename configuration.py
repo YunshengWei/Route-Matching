@@ -22,7 +22,7 @@ lines_file =  os.path.normpath("../data/lines.csv")
 skip_first_line = True
 
 # "all" or [no_1, no_2]
-query_no = [13761412953]
+query_no = [14782653865]
 # minimum longitude used in grid
 min_long = 121.0
 # maximum longitude used in grid

@@ -278,7 +278,8 @@ def split_vehicle_by_routes(vehicle, route_cands):
 
 def match_route_dp(vehicle, routes, grids):
     """
-    dynamic programming algorithm to match routes
+    dynamic programming algorithm to match routes.
+    
     """
     route_cands = filter_by_grids(vehicle, routes, grids)
     split_indices = split_vehicle_by_routes(vehicle, route_cands)
@@ -298,9 +299,9 @@ def match_route_dp(vehicle, routes, grids):
                 if subset_match(vehicle, k, j, routes.get_route(route_no), grids):
                     if 1 + aux[s][0] > aux[i][0] \
                     or aux[s][0] + 1 == aux[i][0] \
-                    and aux[s][1] + routes.get_route_len(route_no) > aux[i][1]:
+                    and aux[s][1] + routes.get_route(route_no).length() > aux[i][1]:
                         valid[i - 1] = True
-                        aux[i] = (aux[s][0] + 1, aux[s][1] + routes.get_route_len(route_no))
+                        aux[i] = (aux[s][0] + 1, aux[s][1] + routes.get_route(route_no).length())
                         back_points[i] = (s, k, route_no)
     matcher = Matcher(vehicle)
     i = len(vehicle) - 1

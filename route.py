@@ -16,6 +16,7 @@ class Route:
         """
         self.route_no = route_no
         self.sites = sites
+        self.total_len = None
 
     def get_no(self):
         return self.route_no
@@ -60,10 +61,11 @@ class Route:
         total distance between adjacent sites,
         use lines to link adjacent sites.
         """
-        length = 0
-        for i in xrange(1, len(self)):
-            length += dist(self.get_location(i), self.get_location(i - 1))
-        return length
+        if self.total_len == None:
+            self.total_len = 0
+            for i in xrange(1, len(self)):
+                self.total_len += dist(self.get_location(i), self.get_location(i - 1))
+        return self.total_len
 
 class Routes:
     def __init__(self):
