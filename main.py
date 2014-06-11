@@ -7,7 +7,7 @@ Created on Sat Jun 07 16:44:32 2014
 
 from __future__ import division
 import sqlite3, traceback, time
-from math import sqrt, ceil
+from math import ceil
 from collections import defaultdict
 import matplotlib.pyplot as plt 
 
@@ -20,6 +20,7 @@ split_pts_int
 from vehicle import Vehicle, Vehicles
 from route import Route, Routes
 from matcher import Matcher
+from helper import dist
 
 #########################################################
 # Debug code
@@ -103,14 +104,7 @@ def read_routes(route_file):
             sites = [tuple(map(float, s.split('|'))) for s in parts[1:]]
             route = Route(route_no, sites)
             routes.add(route)
-    return routes
-
-def dist(p1, p2):
-    """
-    calculate euclidian distance between p1 and p2
-    """
-    return sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
-    
+    return routes    
 
 def grid_index(p):
     """
@@ -348,8 +342,12 @@ if __name__ == "__main__":
         finally:
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
-        
-        
+    r1 = routes.get_route(18)
+    r2 = routes.get_route(45)
+    r3 = routes.get_route(107)
+    print r1.length()
+    print r2.length()
+    print r3.length()    
         
         
         

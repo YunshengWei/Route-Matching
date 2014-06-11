@@ -6,6 +6,7 @@ Created on Sat Jun 07 16:30:50 2014
 """
 
 import matplotlib.pyplot as plt
+from helper import dist
 
 class Route:
     
@@ -38,6 +39,9 @@ class Route:
         return self.get_location(0)
         
     def __len__(self):
+        """
+        count of sites
+        """
         return len(self.sites)
         
     def __iter__(self):
@@ -50,6 +54,16 @@ class Route:
         """    
         x, y = zip(*[self.get_location(i) for i in xrange(start, end)]) 
         plt.plot(x, y, *args1, **args2)
+        
+    def length(self):
+        """
+        total distance between adjacent sites,
+        use lines to link adjacent sites.
+        """
+        length = 0
+        for i in xrange(1, len(self)):
+            length += dist(self.get_location(i), self.get_location(i - 1))
+        return length
 
 class Routes:
     def __init__(self):
