@@ -9,6 +9,8 @@ from __future__ import division
 import sqlite3, traceback, time
 from math import sqrt, ceil
 from collections import defaultdict
+import matplotlib.pyplot as plt 
+
 import configuration
 from configuration import min_long, min_lati, \
 max_long, max_lati, grid_len_long, grid_len_lati, \
@@ -182,10 +184,11 @@ def filter_by_grids(vehicle, routes, grids):
         if (id_x, id_y) in used: continue
         used.add((id_x, id_y))
         for route_no, sites in grids[id_x][id_y].iteritems():
-            for site_no in sites:
-                site_loc = routes.get_route(route_no).get_location(site_no)
-                if dist(site_loc, location) < match_dist:
-                    matched[route_no].add(site_no)
+#             for site_no in sites:
+#                site_loc = routes.get_route(route_no).get_location(site_no)
+#                if dist(site_loc, location) < match_dist:
+#                    matched[route_no].add(site_no)
+            matched[route_no] |= sites
     route_cands = Routes()
     for route_no, sites in matched.iteritems():
         if len(sites) / routes.get_route_len(route_no) >= match_thres:
@@ -268,21 +271,6 @@ def match_route_dp(vehicle, routes, grids):
     """
     route_cands = filter_by_grids(vehicle, routes, grids)
     split_indices = split_vehicle_by_routes(vehicle, route_cands)
-    """aux1 = [0] * (len(split_indices) + 1)
-    aux2 = [0] * len(split_indices)
-    valid = [False] * len(split_indices)
-    back_points = [0] * len(split_indices)
-    for k, (i, route_no_set) in enumerate(split_indices, 1):
-        aux1[k] = aux1[k - 1]
-        for route_no in route_no_set:
-            for t, j, _ in enumerate(reversed(split_indices[0:k])):
-                if not valid[t]: continue
-                if subset_match(vehicle, j + 1, i, routes.get_route(route_no), grids):
-                    if aux1[t][0] + 1 > aux1[k][0] \
-                    or (aux1[t][0] == aux1[t][0] \
-                    and aux1[t][1] + len(routes.get_route(route_no)) > aux1[k][1]):
-                        valid[k] = True
-                        back_points[k] = t"""
     # (match_routes_count, match_sites_count)
     # match_sited_count is compared only when
     # match_routes_count are equal
@@ -303,12 +291,12 @@ def match_route_dp(vehicle, routes, grids):
                         valid[i - 1] = True
                         aux[i] = (aux[s][0] + 1, aux[s][1] + routes.get_route_len(route_no))
                         back_points[i] = (s, k, route_no)
-    matcher = Matcher(vehicle.get_no())
+    matcher = Matcher(vehicle)
     i = len(vehicle) - 1
     s = len(back_points) - 1
     while True:
         s, k, route_no = back_points[s]
-        matcher.insert(0, k, i, route_no)
+        matcher.insert(0, k, i, routes.get_route(route_no))
         if s == 0: break
         i = k - 1
     return matcher
@@ -330,24 +318,19 @@ if __name__ == "__main__":
     grids = make_empty_grids()
     process_routes(routes, grids)
     vehicles = read_vehicles(configuration.database, configuration.query_no)
-#    if configuration.debug_mode:
-#        check_order(vehicles)
-#        check_long_lati(vehicles)
-#    for vehicle in vehicles:
-#        pass
+    plt.close('all')
     for vehicle in vehicles:
         try:
             print "vehicle %s" % vehicle.get_no()
             t0 = time.clock()
             matcher = match_route_dp(vehicle, routes, grids)
             print matcher
+            matcher.plot()
         except:
             print traceback.format_exc()
         finally:
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
-        
-        
         
         
         

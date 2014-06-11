@@ -5,6 +5,8 @@ Created on Sat Jun 07 16:27:47 2014
 @author: Yunsheng Wei
 """
 
+import matplotlib.pyplot as plt
+
 class Vehicle:
     
     def __init__(self, vlist, vehicle_no):
@@ -44,6 +46,14 @@ class Vehicle:
     def __iter__(self):
         return iter(self.vlist)
 
+    def plot(self, start, end, *args1, **args2):
+        """
+        plot vehicle data on a 2d plane on current figure.
+        [start, end)
+        """    
+        x, y = zip(*[self.get_location(i) for i in xrange(start, end)]) 
+        plt.plot(x, y, *args1, **args2)
+    
 class Vehicles:
     
     def __init__(self):

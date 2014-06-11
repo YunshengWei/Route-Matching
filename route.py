@@ -5,7 +5,10 @@ Created on Sat Jun 07 16:30:50 2014
 @author: Yunsheng Wei
 """
 
+import matplotlib.pyplot as plt
+
 class Route:
+    
     def __init__(self, route_no, sites):
         """
         route_no should be int
@@ -39,6 +42,14 @@ class Route:
         
     def __iter__(self):
         return iter(self.sites)
+
+    def plot(self, start, end, *args1, **args2):
+        """
+        plot route data on a 2d plane on current figure.
+        [start, end)
+        """    
+        x, y = zip(*[self.get_location(i) for i in xrange(start, end)]) 
+        plt.plot(x, y, *args1, **args2)
 
 class Routes:
     def __init__(self):
