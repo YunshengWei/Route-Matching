@@ -209,7 +209,24 @@ def subset_match(vehicle, start, end, route, grids):
         used.add((id_x, id_y))
         if grids[id_x][id_y].has_key(route_no):
             matched_sites_no |= grids[id_x][id_y][route_no]
-    return True if len(matched_sites_no) / len(route) > match_thres_one else False     
+    return True if len(matched_sites_no) / len(route) > match_thres_one else False
+    
+def subset_match_with_dist(vehicle, start, end, route, grids):
+    """
+    return whether vehicle[start..end] match route.
+    unlike subset_match, subset_match_with_dist 
+    considers match_dist, is slower but more accurate.
+    """
+    matched_sites_no = set()
+    route_no = route.get_no()
+    for i in xrange(start, end + 1):
+        loc = vehicle.get_location(i)
+        id_x, id_y = grid_index(loc)
+        if grids[id_x][id_y].has_key(route_no):
+            sites_no_set = set(site_no for site_no in grids[id_x][id_y][route_no]
+                               if dist(route.get_location(site_no), loc) < match_dist)
+            matched_sites_no |= sites_no_set
+    return True if len(matched_sites_no) / len(route) > match_thres_one else False    
 
 #########################################################
 # Deprecated
