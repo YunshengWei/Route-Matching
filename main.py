@@ -324,10 +324,9 @@ def match_route_dp(vehicle, routes, grids):
     
     i = len(vehicle) - 1
     s = len(back_points) - 1
-    while True:
+    while back_points[s] != None:
         s, k, route_no = back_points[s]
         matcher.insert(0, k, i, routes.get_route(route_no))
-        if s == 0: break
         i = k - 1
     return matcher
 
@@ -361,14 +360,12 @@ if __name__ == "__main__":
         finally:
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
-    r1 = routes.get_route(18)
-    r2 = routes.get_route(45)
-    r3 = routes.get_route(107)
-    print r1.length()
-    print r2.length()
-    print r3.length()    
-        
-        
+    plt.figure()
+    vehicle.plot(0, len(vehicle), 'b--')
+    r1 = routes.get_route(77)
+    r2 = routes.get_route(103)
+    r1.plot(0, len(r1), 'g<')
+    r2.plot(0, len(r2), 'rH')
         
         
         
