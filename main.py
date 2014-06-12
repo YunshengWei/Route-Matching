@@ -296,11 +296,6 @@ def match_route_dp(vehicle, routes, grids):
     """
     route_cands = filter_by_grids(vehicle, routes, grids)
     split_indices = split_vehicle_by_routes(vehicle, route_cands)
-    matcher = Matcher(vehicle)
-    # if no match
-    if not split_indices:
-        return matcher
-    
     # (match_routes_count, match_sites_count)
     # match_sited_count is compared only when
     # match_routes_count are equal
@@ -321,7 +316,7 @@ def match_route_dp(vehicle, routes, grids):
                         valid[i - 1] = True
                         aux[i] = (aux[s][0] + 1, aux[s][1] + routes.get_route(route_no).length())
                         back_points[i] = (s, k, route_no)
-    
+    matcher = Matcher(vehicle)
     i = len(vehicle) - 1
     s = len(back_points) - 1
     while back_points[s] != None:
