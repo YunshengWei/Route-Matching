@@ -62,9 +62,8 @@ class Route:
         use lines to link adjacent sites.
         """
         if self.total_len == None:
-            self.total_len = 0
-            for i in xrange(1, len(self)):
-                self.total_len += dist(self.get_location(i), self.get_location(i - 1))
+            self.total_len = sum(dist(self.get_location(i), self.get_location(i - 1))
+                                 for i in xrange(1, len(self)))
         return self.total_len
 
 class Routes:

@@ -113,15 +113,28 @@ def grid_index(p):
     return (int(ceil((p[0] - min_long) / grid_len_long)), 
             int(ceil((p[1] - min_lati) / grid_len_lati)))
 
+#########################################################
+# Deprecated
 def make_empty_grids():
     """
-    make grids in [min_long, max_long] * [min_lati, max_lati]
+    make empty grids in [min_long, max_long] * [min_lati, max_lati]
     """
     num_long = int(ceil((max_long - min_long) / grid_len_long)) + 1
     num_lati = int(ceil((max_lati - min_lati) / grid_len_lati)) + 1
     grids = [[dict() for i in xrange(num_lati)] for j in xrange(num_long)]
     return grids
+#########################################################
     
+def make_empty_grids_dict():
+    """
+    make empty grids using defaultdict as
+    underlying data structure instead of list.
+    This function is more robust than make_empty_grids, 
+    and does not assume ranges of longitude and latitude.
+    """
+    grids = defaultdict(lambda : defaultdict(dict))
+    return grids
+
 def process_routes(routes, grid):
     """
     put routes in corresponding grids
@@ -283,6 +296,11 @@ def match_route_dp(vehicle, routes, grids):
     """
     route_cands = filter_by_grids(vehicle, routes, grids)
     split_indices = split_vehicle_by_routes(vehicle, route_cands)
+    matcher = Matcher(vehicle)
+    # if no match
+    if not split_indices:
+        return matcher
+    
     # (match_routes_count, match_sites_count)
     # match_sited_count is compared only when
     # match_routes_count are equal
@@ -303,7 +321,7 @@ def match_route_dp(vehicle, routes, grids):
                         valid[i - 1] = True
                         aux[i] = (aux[s][0] + 1, aux[s][1] + routes.get_route(route_no).length())
                         back_points[i] = (s, k, route_no)
-    matcher = Matcher(vehicle)
+    
     i = len(vehicle) - 1
     s = len(back_points) - 1
     while True:
@@ -327,7 +345,7 @@ def error_handling():
 
 if __name__ == "__main__":
     routes = read_routes(configuration.lines_file)
-    grids = make_empty_grids()
+    grids = make_empty_grids_dict()
     process_routes(routes, grids)
     vehicles = read_vehicles(configuration.database, configuration.query_no)
     plt.close('all')
