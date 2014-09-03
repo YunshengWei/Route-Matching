@@ -15,6 +15,9 @@ import os
 # database should have index on Sim
 database = os.path.normpath("../data/Route_Matching.db")
 
+# vehicles_file
+vehicles_file = os.path.normpath("../data/gps-2014-3-26.txt")
+
 # format of lines_file
 # longitude should be before latitude!
 lines_file =  os.path.normpath("../data/lines.csv")
@@ -22,7 +25,10 @@ lines_file =  os.path.normpath("../data/lines.csv")
 skip_first_line = True
 
 # "all" or [no_1, no_2]
-query_no = [15711695761]
+query_no = [13661953424]
+
+############################################
+# Deprecated
 # minimum longitude used in grid
 min_long = 121.0
 # maximum longitude used in grid
@@ -31,6 +37,8 @@ max_long = 122.0
 min_lati = 30.7
 # maximum latitude used in grid
 max_lati = 32.0
+############################################
+
 # grid length of longitude
 grid_len_long = 0.004
 # grid length of latitude
@@ -45,6 +53,8 @@ match_dist = 0.01
 around_grid = 1
 # intervals between split points for one route (included)
 split_pts_int = 10
+# time length used to help decide whether vehicle is at stop (measured in seconds)
+stop_time = 5
 
 debug_mode = False
 verbose = True
