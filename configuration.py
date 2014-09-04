@@ -16,7 +16,12 @@ import os
 database = os.path.normpath("../data/Route_Matching.db")
 
 # vehicles_file
+# first line should give name of columns
 vehicles_file = os.path.normpath("../data/gps-2014-3-26.txt")
+
+# map_file
+# skip first line
+map_file = os.path.normpath("../data/stat-line-map.txt")
 
 # format of lines_file
 # longitude should be before latitude!
