@@ -8,6 +8,7 @@ Created on Wed Sep 03 21:31:29 2014
 import sqlite3, calendar
 from datetime import datetime
 
+from mapper import Mapper
 import configuration
 
 def vehicles_to_database(database, vehicles_file):
@@ -52,6 +53,8 @@ def cards_to_database(database, cards_file):
     """
     put data in cards_file into database.
     """
+    
+    mapper = Mapper(configuration.map_file)
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
     
@@ -69,6 +72,8 @@ def cards_to_database(database, cards_file):
         for line in reader:
             parts = line.strip().split(',')
             assert len(parts) == 15
+            if not mapper.has_statid(parts[9]):
+                continue
             if parts[5].count(':') == 1:
                 parts[5] = parts[5] + ":00"
             parts[5] = datetime.strptime(parts[5], "%Y/%m/%d %H:%M:%S")

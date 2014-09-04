@@ -41,10 +41,15 @@ class Mapper:
     
     def all_statids(self):
         return self.statid2lineid.keys()
+        
+    def has_lineid(self, lineid):
+        return self.lineid2statid.has_key(lineid)
+    
+    def has_statid(self, statid):
+        return self.statid2lineid.has_key(statid)
     
 # unit test
 if __name__ == "__main__":
     mapper = Mapper(configuration.map_file)
-#    print mapper.all_lineids()
+    print sorted(mapper.all_lineids(), key = lambda x: int(x))
 #    print mapper.all_statids()
-    print mapper.get_statid_from_lineid('3')

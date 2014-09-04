@@ -18,3 +18,10 @@ def dist(p1, p2):
     calculate euclidian distance between p1 and p2
     """
     return sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
+
+def extract_time_seq_from_vehicle(vehicle):
+    """
+    extract time sequence from vehicle according to 
+    time sequence is represented as a list of ordered timestamp.
+    """
+    pass

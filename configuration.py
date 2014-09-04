@@ -64,6 +64,12 @@ around_grid = 1
 split_pts_int = 10
 # time length used to help decide whether vehicle is at stop (measured in seconds)
 stop_time = 60
+#
+short_stop_time = 10
+# width for time grid
+time_grid_width = 20
+# step for time offset
+time_offset_step = 10
 
 debug_mode = False
 verbose = True
