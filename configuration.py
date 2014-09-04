@@ -23,6 +23,10 @@ vehicles_file = os.path.normpath("../data/gps-2014-3-26.txt")
 # skip first line
 map_file = os.path.normpath("../data/stat-line-map.txt")
 
+# cards_file
+# Do NOT need to skip the first line!
+cards_file = os.path.normpath("../data/data.txt")
+
 # format of lines_file
 # longitude should be before latitude!
 lines_file =  os.path.normpath("../data/lines.csv")
@@ -30,7 +34,7 @@ lines_file =  os.path.normpath("../data/lines.csv")
 skip_first_line = True
 
 # "all" or [no_1, no_2]
-query_no = [13661953424]
+query_no = ['013661953424']
 
 ############################################
 # Deprecated
@@ -59,7 +63,7 @@ around_grid = 1
 # intervals between split points for one route (included)
 split_pts_int = 10
 # time length used to help decide whether vehicle is at stop (measured in seconds)
-stop_time = 5
+stop_time = 60
 
 debug_mode = False
 verbose = True

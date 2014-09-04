@@ -30,10 +30,10 @@ class Mapper:
                     self.lineid2statid.setdefault(bid, set())
                     self.lineid2statid[bid].add(tjrlstatid)
         
-    def statid2lineid(self, statid):
+    def get_lineid_from_statid(self, statid):
         return self.statid2lineid.get(statid, set())
         
-    def lineid2statid(self, lineid):
+    def get_statid_from_lineid(self, lineid):
         return self.lineid2statid.get(lineid, set())
     
     def all_lineids(self):
@@ -45,6 +45,6 @@ class Mapper:
 # unit test
 if __name__ == "__main__":
     mapper = Mapper(configuration.map_file)
-    print mapper.all_lineids()
-    print mapper.all_statids()
-    
+#    print mapper.all_lineids()
+#    print mapper.all_statids()
+    print mapper.get_statid_from_lineid('3')

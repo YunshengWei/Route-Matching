@@ -13,10 +13,10 @@ import configuration
 def vehicles_to_database(database, vehicles_file):
     """
     put data in vehicles_file into database.
-    Attention: this method can not be run repeatedly!
     """
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
+    cursor.execute("DROP TABLE IF EXISTS vehicles")
     cursor.execute("""
                    CREATE TABLE IF NOT EXISTS vehicles
                   (id INTEGER PRIMARY KEY,
@@ -25,12 +25,8 @@ def vehicles_to_database(database, vehicles_file):
                    gpstime INTEGER,
                    sim TEXT)
                    """)
-    cursor.execute("""
-                   CREATE INDEX IF NOT EXISTS sim_index ON vehicles(sim)
-                   """)
-    cursor.execute("""
-                   CREATE INDEX IF NOT EXISTS gpstime_index ON vehicles(gpstime)
-                   """)
+    cursor.execute("CREATE INDEX IF NOT EXISTS sim_index ON vehicles(sim)")
+    cursor.execute("CREATE INDEX IF NOT EXISTS gpstime_index ON vehicles(gpstime)")
     with open(vehicles_file, 'r') as reader:
         # the first line should give the column order        
         line = reader.readline().strip()
@@ -53,6 +49,36 @@ def vehicles_to_database(database, vehicles_file):
     conn.close()
 
 def cards_to_database(database, cards_file):
+    """
+    put data in cards_file into database.
+    """
+    conn = sqlite3.connect(database)
+    cursor = conn.cursor()
+    
+    cursor.execute("DROP TABLE IF EXISTS cards")
+    cursor.execute("""
+                   CREATE TABLE IF NOT EXISTS cards
+                  (posid TEXT,
+                   time INTEGER,
+                   statid TEXT)
+                   """)
+    cursor.execute("CREATE INDEX time_index ON cards(time)")
+    cursor.execute("CREATE INDEX statid_index ON cards(statid)")
+    cursor.execute("CREATE INDEX posid_index ON cards(posid)")
+    with open(cards_file, 'r') as reader:
+        for line in reader:
+            parts = line.strip().split(',')
+            assert len(parts) == 15
+            if parts[5].count(':') == 1:
+                parts[5] = parts[5] + ":00"
+            parts[5] = datetime.strptime(parts[5], "%Y/%m/%d %H:%M:%S")
+            parts[5] = calendar.timegm(parts[5].utctimetuple())
+            cursor.execute("INSERT INTO cards VALUES (?, ?, ?)",
+                           (parts[3], parts[5], parts[9]))
+            
+    cursor.close()
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
-    vehicles_to_database(configuration.database, configuration.vehicles_file)
+    cards_to_database(configuration.database, configuration.cards_file)

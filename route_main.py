@@ -92,8 +92,9 @@ def read_vehicles(database, query_no):
     vehicles = Vehicles()
     for sim in all_sims:
         # Order by Id?
-        cursor.execute("""SELECT id, latitude, longitude, gpstime FROM vehicles
-                          WHERE sim = ?""", sim)
+        cursor.execute("""SELECT id, latitude, longitude, gpstime 
+                          FROM vehicles
+                          WHERE sim = ? ORDER BY gpstime ASC""", sim)
         results = cursor.fetchall()
         vehicle = Vehicle(results, sim[0])
         vehicles.add(vehicle)
@@ -114,7 +115,7 @@ def read_routes(route_file):
             line = line.strip()
             if not line: continue
             parts = filter(None, line.split(','))            
-            route_no = int(parts[0])
+            route_no = parts[0]
             sites = [tuple(map(float, s.split('|'))) for s in parts[1:]]
             route = Route(route_no, sites)
             routes.add(route)
@@ -371,13 +372,34 @@ if __name__ == "__main__":
             t0 = time.clock()
             matcher = match_route_dp(vehicle, routes, grids)
             print matcher
-            matcher.plot()
+            #matcher.plot()
         except:
             print traceback.format_exc()
         finally:
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
 
+    i = 0
+    plt.figure()
+    plt.hold()
+    for vehicle in vehicles:
+        pass
+    while i < len(vehicle):
+        k = len(vehicle) - 1
+        for j in xrange(i, len(vehicle)):
+            if vehicle.get_location(j) != vehicle.get_location(i):
+                k = j - 1
+                break
+        if vehicle.get_GpsTime(k) - vehicle.get_GpsTime(i) >= stop_time:
+            print i, datetime.utcfromtimestamp(vehicle.get_GpsTime(i)).strftime("%Y-%m-%d %H:%M:%S"), \
+            k, datetime.utcfromtimestamp(vehicle.get_GpsTime(k)).strftime("%Y-%m-%d %H:%M:%S")
+            plt.plot(vehicle.get_location(i)[0], vehicle.get_location(i)[1], 'ro')
+        i = k + 1
+    routes.get_route('108').plot(0, len(routes.get_route('108')))
+    routes.get_route('70').plot(0, len(routes.get_route('70')))
+    routes.get_route('48').plot(0, len(routes.get_route('48')))
+    plt.show()
+            
 
 #    plt.figure()
 #    vehicle.plot(0, len(vehicle), 'b--')
