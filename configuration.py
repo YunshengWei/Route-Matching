@@ -36,10 +36,10 @@ lines_file =  os.path.normpath("../data/lines.csv")
 connector_file = os.path.normpath("../data/connector.dat")
 
 # "all" or [no_1, no_2]
-query_no = "all"
+query_no = "all"#["013817297592", "013817092369"]
 
 # "all" or [(posid, statid), (posid, statid)]
-card_query_tuple = "all"
+card_query_tuple = "all"#[(u'11150197', u'73530')]
 
 ############################################
 # Deprecated
@@ -71,8 +71,6 @@ split_pts_int = 10
 stop_time = 60
 # time used to split card time (measured in seconds)
 between_card_time = 60
-# width for time grid
-time_grid_width = 20
 # outlier distance threshold
 outlier_dist_thres = 0.5
 

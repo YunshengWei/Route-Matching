@@ -7,6 +7,7 @@ Created on Wed Sep 03 20:28:56 2014
 
 from __future__ import division
 import cPickle as pickle
+import matplotlib.pyplot as plt
 
 from configuration import map_file, \
 lines_file, connector_file, between_card_time, \
@@ -53,13 +54,23 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
 
     cand_vehicles = [vehicles.get_vehicle(vehicle_no)
                      for vehicle_no in cand_vehicles_nos]
+                
     card = card.get_simplified_card(between_card_time)
-    print card.time_sequence
     max_ratio = 0.0
     max_vehicle = None
+    plt.close('all')
     for vehicle in cand_vehicles:
         match_num = 0
-        locations = vehicle.get_locations_at_timestamps(card.get_time_sequence)
+        locations = vehicle.get_locations_at_timestamps(card.get_time_sequence())
+#        x, y = zip(*filter(None, locations))
+#        plt.figure()
+        #vehicle.plot(0, len(vehicle))
+#        plt.plot(x, y, 'gs')
+#        for route_no in route_nos:
+#            route = routes.get_route(route_no)
+#            route.plot(0, len(route), 'ro')
+            
+#        plt.show()
         for location in locations:
             if location == None:
                 continue
@@ -70,6 +81,7 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
                     break
             
         ratio = match_num / float(len(card))
+        print vehicle.get_no(), match_num, '/', len(card)
         if ratio > max_ratio:
             max_ratio = ratio
             max_vehicle = vehicle
@@ -92,7 +104,9 @@ if __name__ == "__main__":
     
     for card in cards:
         print card.get_no()
-        match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)
+        max_ratio, vehicle = match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)
+        print max_ratio, vehicle.get_no()
+        _ = raw_input("press any key to continue")
 
 
 

@@ -74,6 +74,13 @@ class Vehicle:
         x, y = zip(*[self.get_location(i) for i in xrange(start, end)]) 
         plt.plot(x, y, *args1, **args2)
         
+    def plot_points(self, list_of_indices, *args1, **args2):
+        """
+        plot vehicle data on a 2d plane on current figure.
+        """
+        x, y = zip(*[self.get_location(i) for i in list_of_indices])
+        plt.plot(x, y, *args1, **args2)
+        
     def get_location_at_timestamp(self, ts):
         """
         get the location of the vehicle at time nearest to ts.

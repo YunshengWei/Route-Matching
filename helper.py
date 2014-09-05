@@ -96,7 +96,7 @@ def binary_search(ele, l, key = lambda x: x):
             end = pivot - 1
         else:
             start = pivot + 1
-    return ('interval', end, start)
+    return ('interval', (end, start))
     
     
     
