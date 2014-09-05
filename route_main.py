@@ -11,12 +11,16 @@ from math import ceil
 from collections import defaultdict
 from datetime import datetime
 import matplotlib.pyplot as plt 
+try:
+    import cPickle as pickle
+except:
+    import pickle
 
 import configuration
 from configuration import min_long, min_lati, \
 max_long, max_lati, grid_len_long, grid_len_lati, \
 match_thres, around_grid, match_dist, match_thres_one, \
-split_pts_int, stop_time
+split_pts_int, stop_time, matchers_file
 
 from vehicle import Vehicle, Vehicles
 from route import Route, Routes
@@ -366,6 +370,7 @@ if __name__ == "__main__":
     process_routes(routes, grids)
     vehicles = read_vehicles(configuration.database, configuration.query_no)
     plt.close('all')
+    matchers = []
     for vehicle in vehicles:
         try:
             print "vehicle %s" % vehicle.get_no()
@@ -373,32 +378,34 @@ if __name__ == "__main__":
             matcher = match_route_dp(vehicle, routes, grids)
             print matcher
             #matcher.plot()
+            matchers.append(matcher)
         except:
             print traceback.format_exc()
         finally:
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
-
-    i = 0
-    plt.figure()
-    plt.hold()
-    for vehicle in vehicles:
-        pass
-    while i < len(vehicle):
-        k = len(vehicle) - 1
-        for j in xrange(i, len(vehicle)):
-            if vehicle.get_location(j) != vehicle.get_location(i):
-                k = j - 1
-                break
-        if vehicle.get_GpsTime(k) - vehicle.get_GpsTime(i) >= stop_time:
-            print i, datetime.utcfromtimestamp(vehicle.get_GpsTime(i)).strftime("%Y-%m-%d %H:%M:%S"), \
-            k, datetime.utcfromtimestamp(vehicle.get_GpsTime(k)).strftime("%Y-%m-%d %H:%M:%S")
-            plt.plot(vehicle.get_location(i)[0], vehicle.get_location(i)[1], 'ro')
-        i = k + 1
-    routes.get_route('108').plot(0, len(routes.get_route('108')))
-    routes.get_route('70').plot(0, len(routes.get_route('70')))
-    routes.get_route('48').plot(0, len(routes.get_route('48')))
-    plt.show()
+    pickle.dump(matchers, matchers_file)
+    
+#    i = 0
+#    plt.figure()
+#    plt.hold()
+#    for vehicle in vehicles:
+#        pass
+#    while i < len(vehicle):
+#        k = len(vehicle) - 1
+#        for j in xrange(i, len(vehicle)):
+#            if vehicle.get_location(j) != vehicle.get_location(i):
+#                k = j - 1
+#                break
+#        if vehicle.get_GpsTime(k) - vehicle.get_GpsTime(i) >= stop_time:
+#            print i, datetime.utcfromtimestamp(vehicle.get_GpsTime(i)).strftime("%Y-%m-%d %H:%M:%S"), \
+#            k, datetime.utcfromtimestamp(vehicle.get_GpsTime(k)).strftime("%Y-%m-%d %H:%M:%S")
+#            plt.plot(vehicle.get_location(i)[0], vehicle.get_location(i)[1], 'ro')
+#        i = k + 1
+#    routes.get_route('108').plot(0, len(routes.get_route('108')))
+#    routes.get_route('70').plot(0, len(routes.get_route('70')))
+#    routes.get_route('48').plot(0, len(routes.get_route('48')))
+#    plt.show()
             
 
 #    plt.figure()

@@ -33,8 +33,14 @@ lines_file =  os.path.normpath("../data/lines.csv")
 # skip the first line of lines_file?
 skip_first_line = True
 
+# matchers_file
+matchers_file = os.path.normpath("../data/matchers.dat")
+
 # "all" or [no_1, no_2]
-query_no = ['013661953424']
+query_no = "all"
+
+# "all" or [(posid, statid), (posid, statid)]
+card_query_tuple = "all"
 
 ############################################
 # Deprecated
@@ -64,12 +70,11 @@ around_grid = 1
 split_pts_int = 10
 # time length used to help decide whether vehicle is at stop (measured in seconds)
 stop_time = 60
-#
-short_stop_time = 10
+# time used to split card time (measured in seconds)
+between_card_time = 60
 # width for time grid
 time_grid_width = 20
-# step for time offset
-time_offset_step = 10
+
 
 debug_mode = False
 verbose = True

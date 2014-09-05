@@ -53,6 +53,27 @@ class Vehicle:
         """    
         x, y = zip(*[self.get_location(i) for i in xrange(start, end)]) 
         plt.plot(x, y, *args1, **args2)
+        
+    def get_location_at_timestamp(ts):
+        """
+        get the location of the vehicle at time nearest to ts.
+        location as (longitude, latitude)
+        use binary search
+        """
+        pass        
+        
+    def get_location_at_timestamps(times):
+        """
+        get locations at times.
+        times should be ascended order.
+        location as (longitude, latitude)
+        """
+        locations = []
+        if not times:
+            return locations
+        id1 = 0
+        for i in xrange(len(self)):
+            pass
     
 class Vehicles:
     
