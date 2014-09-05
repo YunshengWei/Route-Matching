@@ -6,6 +6,9 @@ Created on Sat Jun 07 16:27:47 2014
 """
 
 import matplotlib.pyplot as plt
+from helper import weighted_location, dist
+from configuration import outlier_dist_thres
+from helper import binary_search, weighted_location
 
 class Vehicle:
     
@@ -45,7 +48,24 @@ class Vehicle:
     
     def __iter__(self):
         return iter(self.vlist)
-
+    
+    def denoise(self):
+        """
+        return a new vehicle with outlier removed
+        """
+        if len(self.vlist) < 3:
+            return self
+        new_vlist = [self.vlist[0]]
+        for i in xrange(1, len(self.vlist) - 1):
+            if dist(self.get_location(i), self.get_location(i-1)) > outlier_dist_thres \
+            and dist(self.get_location(i), self.get_location(i+1)) > outlier_dist_thres:
+                print ("remove outlier in %s" % self.get_no()), self.get_location(i-1), \
+                self.get_location(i), self.get_location(i+1)
+                continue
+            new_vlist.append(self.vlist[i])
+        new_vlist.append(self.vlist[-1])
+        return Vehicle(new_vlist, self.get_no)
+        
     def plot(self, start, end, *args1, **args2):
         """
         plot vehicle data on a 2d plane on current figure.
@@ -54,26 +74,31 @@ class Vehicle:
         x, y = zip(*[self.get_location(i) for i in xrange(start, end)]) 
         plt.plot(x, y, *args1, **args2)
         
-    def get_location_at_timestamp(ts):
+    def get_location_at_timestamp(self, ts):
         """
         get the location of the vehicle at time nearest to ts.
         location as (longitude, latitude)
         use binary search
         """
-        pass        
+        if not self.vlist:
+            return None
+        result = binary_search(ts, self.vlist, key = lambda x: x[3])
+        if result[0] == 'found':
+            return self.get_location(result[1])
+        if result[0] == 'interval':
+            return weighted_location(ts, self.get_location(result[1][0]),\
+            self.get_location(result[1][1]), self.get_GpsTime(result[1][0]), \
+            self.get_GpsTime(result[1][1]))
+        return self.get_location(result[1])
         
-    def get_location_at_timestamps(times):
+    def get_locations_at_timestamps(self, times):
         """
         get locations at times.
         times should be ascended order.
         location as (longitude, latitude)
         """
-        locations = []
-        if not times:
-            return locations
-        id1 = 0
-        for i in xrange(len(self)):
-            pass
+        return [self.get_location_at_timestamp(time)
+                for time in times]
     
 class Vehicles:
     

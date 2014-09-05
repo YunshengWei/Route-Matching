@@ -6,26 +6,24 @@ Created on Sat Jun 07 16:44:32 2014
 """
 
 from __future__ import division
-import sqlite3, traceback, time
+import traceback, time
 from math import ceil
 from collections import defaultdict
 from datetime import datetime
 import matplotlib.pyplot as plt 
-try:
-    import cPickle as pickle
-except:
-    import pickle
+
+import cPickle as pickle
 
 import configuration
 from configuration import min_long, min_lati, \
 max_long, max_lati, grid_len_long, grid_len_lati, \
 match_thres, around_grid, match_dist, match_thres_one, \
-split_pts_int, stop_time, matchers_file
+split_pts_int, stop_time
 
-from vehicle import Vehicle, Vehicles
-from route import Route, Routes
 from matcher import Matcher
-from helper import dist
+from helper import dist, grid_index, \
+make_empty_grids_dict, process_routes, neighbor_id
+from read_date import read_vehicles, read_routes
 
 #########################################################
 # Debug code
@@ -79,58 +77,7 @@ def check_GPS_time(vehicle):
         "vehicle %d column GPSTime not in order" % vehicle.get_no()
         last_datetime = time
     print "vehicle %d column GPSTime is in order." % vehicle.get_no()
-#########################################################
-    
-def read_vehicles(database, query_no):
-    """
-    read vehicle data
-    """
-    conn = sqlite3.connect(database)
-    cursor = conn.cursor()
-    # database should have index on Sim
-    if query_no == "all":
-        cursor.execute("SELECT DISTINCT sim FROM vehicles")
-        all_sims = cursor.fetchall()
-    else:
-        all_sims = [(no, ) for no in query_no]
-    vehicles = Vehicles()
-    for sim in all_sims:
-        # Order by Id?
-        cursor.execute("""SELECT id, latitude, longitude, gpstime 
-                          FROM vehicles
-                          WHERE sim = ? ORDER BY gpstime ASC""", sim)
-        results = cursor.fetchall()
-        vehicle = Vehicle(results, sim[0])
-        vehicles.add(vehicle)
-    cursor.close()
-    conn.close()
-    return vehicles
-    
-def read_routes(route_file):
-    """
-    read route data
-    """
-    with open(route_file, 'r') as f:
-        if configuration.skip_first_line:        
-            # the first line is title        
-            f.readline()
-        routes = Routes()
-        for line in f:
-            line = line.strip()
-            if not line: continue
-            parts = filter(None, line.split(','))            
-            route_no = parts[0]
-            sites = [tuple(map(float, s.split('|'))) for s in parts[1:]]
-            route = Route(route_no, sites)
-            routes.add(route)
-    return routes    
-
-def grid_index(p):
-    """
-    p[0] is longitude, p[1] is latitude
-    """
-    return (int(ceil((p[0] - min_long) / grid_len_long)), 
-            int(ceil((p[1] - min_lati) / grid_len_lati)))
+######################################################### 
 
 #########################################################
 # Deprecated
@@ -144,37 +91,6 @@ def make_empty_grids():
     return grids
 #########################################################
     
-def make_empty_grids_dict():
-    """
-    make empty grids using defaultdict as
-    underlying data structure instead of list.
-    This function is more robust than make_empty_grids, 
-    and does not assume ranges of longitude and latitude.
-    """
-    grids = defaultdict(lambda : defaultdict(dict))
-    return grids
-
-def process_routes(routes, grid):
-    """
-    put routes in corresponding grids
-    """
-    for route in routes:
-        route_no = route.get_no()
-        for i, site in enumerate(route):      
-            idx, idy = grid_index(site)
-            for longi, lati in neighbor_id(idx, idy):
-                grid[longi][lati].setdefault(route_no, set())
-                grid[longi][lati][route_no].add(i)
-
-def neighbor_id(id_x, id_y):
-    """
-    return neighborhood location of (id_x, id_y),
-    i.e.  [id_x - around_gird, id_x + around_gird] 
-        * [id_y - around_grid, id_y + around_grid]
-    """
-    for i in xrange(-around_grid + id_x, around_grid + id_x + 1):
-        for j in xrange(-around_grid + id_y, around_grid + id_y + 1):
-            yield (i, j)
 
 #########################################################
 # Deprecated
@@ -384,7 +300,7 @@ if __name__ == "__main__":
         finally:
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
-    pickle.dump(matchers, matchers_file)
+    
     
 #    i = 0
 #    plt.figure()

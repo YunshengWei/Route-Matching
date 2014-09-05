@@ -6,11 +6,10 @@ Created on Wed Sep 03 20:28:56 2014
 """
 
 from __future__ import division
-from math import ceil
-import sqlite3
 
 import configuration
-from card import Card, Cards
+from read_data import read_cards
+from helper import grid_index
 
 #def time_seqs_match(ts, ts_list, interval_width):
 #    """
@@ -36,52 +35,39 @@ from card import Card, Cards
 #    index = max(xrange(len(ratios)), key = lambda x: ratios[x])
 #    return (index, ratios[index])
     
-    
-def read_cards(database, query_tuple):
-    """
-    read card data
-    """
-    conn = sqlite3.connect(database)
-    cursor = conn.cursor()
-    if query_tuple == "all":
-        cursor.execute("SELECT DISTINCT posid, statid FROM cards")
-        all_cards = cursor.fetchall()
-    else:
-        all_cards = query_tuple
-    cards = Cards()
-    for t in all_cards:
-        cursor.execute("""SELECT time FROM cards
-                          WHERE posid = ? AND statid = ?
-                          ORDER BY time ASC""", t)
-        results = cursor.fetchall()
-        results = [time[0] for time in results]
-        card = Card(results, t)
-        cards.add(card)
-    cursor.close()
-    conn.close()
-    return cards
 
-def match_card_from_vehicles(card, mapper, connector, routes):
+def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
     """
     find the best match for the card
     """
     route_nos = mapper.get_lineid_from_statid(card.get_no()[1])
-    routes = [routes.get_route(route_no) for route_no in route_nos]
     
-    cand_vehicles = []
+    cand_vehicles_nos = set()
     for route_no in route_nos:    
-        cand_vehicles += connector.get_cands(route_no)
-    cand_vehicles_unique = []
-    for vehicle in cand_vehicles:
-        if vehicle not in cand_vehicles_unique:
-            cand_vehicles_unique.append(vehicle)
-            
+        cand_vehicles_nos |= connector.get_cands(route_no)
+
+    cand_vehicles = [vehicles.get_vehicle(vehicle_no)
+                     for vehicle_no in cand_vehicles_nos]
     card = card.get_simplified_card()
-    max_ratio = 0
-    for vehicle in cand_vehicles_unique:
+    max_ratio = 0.0
+    max_vehicle = None
+    for vehicle in cand_vehicles:
         match_num = 0
         locations = vehicle.get_locations_at_timestamps(card.get_time_sequence)
-        
+        for location in locations:
+            if location == None:
+                continue
+            gid = grid_index(location)
+            for route_no in route_nos:
+                if grids[gid[0]][gid[1]].has_key(route_no):
+                    match_num += 1
+                    break
+            
+        ratio = match_num / float(len(card))
+        if ratio > max_ratio:
+            max_ratio = ratio
+            max_vehicle = vehicle
+    return max_ratio, max_vehicle
 
 
 if __name__ == "__main__":

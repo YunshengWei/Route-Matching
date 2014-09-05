@@ -29,12 +29,11 @@ cards_file = os.path.normpath("../data/data.txt")
 
 # format of lines_file
 # longitude should be before latitude!
+# Skip the first line!
 lines_file =  os.path.normpath("../data/lines.csv")
-# skip the first line of lines_file?
-skip_first_line = True
 
-# matchers_file
-matchers_file = os.path.normpath("../data/matchers.dat")
+# connector_file
+connector_file = os.path.normpath("../data/connector.dat")
 
 # "all" or [no_1, no_2]
 query_no = "all"
@@ -74,6 +73,8 @@ stop_time = 60
 between_card_time = 60
 # width for time grid
 time_grid_width = 20
+# outlier distance threshold
+outlier_dist_thres = 0.5
 
 
 debug_mode = False

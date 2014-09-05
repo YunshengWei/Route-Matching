@@ -16,11 +16,12 @@ class Connector:
         """
         self.connector = {}
         for matcher in matchers:
-            vehicle = matcher.vehicle
+            vehicle_no = matcher.vehicle.get_no()
             for _, _, route in matcher.mlist:
-                self.connector.setdefault(route.get_no(), [])
-                if vehicle not in self.connector[route.get_no()]:
-                    self.connector[route.get_no()].append(vehicle)
+                self.connector.setdefault(route.get_no(), set())
+                if vehicle_no not in self.connector[route.get_no()]:
+                    self.connector[route.get_no()].add(vehicle_no)
                     
     def get_cands(self, route_no):
-        return self.connector.get(route_no, [])
+        return self.connector.get(route_no, set())
+        
