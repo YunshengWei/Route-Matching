@@ -105,8 +105,11 @@ if __name__ == "__main__":
     for card in cards:
         print card.get_no()
         max_ratio, vehicle = match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)
-        print max_ratio, vehicle.get_no()
-        _ = raw_input("press any key to continue")
+        if vehicle == None:
+            print max_ratio, "No match"
+        else:
+            print max_ratio, vehicle.get_no()
+        #_ = raw_input("press any key to continue")
 
 
 
