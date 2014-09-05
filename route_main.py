@@ -18,12 +18,13 @@ import configuration
 from configuration import min_long, min_lati, \
 max_long, max_lati, grid_len_long, grid_len_lati, \
 match_thres, around_grid, match_dist, match_thres_one, \
-split_pts_int, stop_time
+split_pts_int, stop_time, connector_file
 
 from matcher import Matcher
 from helper import dist, grid_index, \
 make_empty_grids_dict, process_routes, neighbor_id
 from read_date import read_vehicles, read_routes
+from connector import Connector
 
 #########################################################
 # Debug code
@@ -300,7 +301,8 @@ if __name__ == "__main__":
         finally:
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
-    
+    connector = Connector(matchers)
+    pickle.dump(connector, open(connector_file, 'wb'))
     
 #    i = 0
 #    plt.figure()

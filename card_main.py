@@ -6,10 +6,15 @@ Created on Wed Sep 03 20:28:56 2014
 """
 
 from __future__ import division
+import cPickle as pickle
 
-import configuration
-from read_data import read_cards
-from helper import grid_index
+from configuration import map_file, \
+lines_file, connector_file, between_card_time, \
+database, card_query_tuple, query_no
+from read_data import read_cards, read_routes, read_vehicles
+from helper import grid_index, make_empty_grids_dict, process_routes
+from mapper import Mapper
+import connector
 
 #def time_seqs_match(ts, ts_list, interval_width):
 #    """
@@ -48,7 +53,8 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
 
     cand_vehicles = [vehicles.get_vehicle(vehicle_no)
                      for vehicle_no in cand_vehicles_nos]
-    card = card.get_simplified_card()
+    card = card.get_simplified_card(between_card_time)
+    print card.time_sequence
     max_ratio = 0.0
     max_vehicle = None
     for vehicle in cand_vehicles:
@@ -71,10 +77,22 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
 
 
 if __name__ == "__main__":
-    cards = read_cards(configuration.database, configuration.card_query_tuple)
+    cards = read_cards(database, card_query_tuple)
+    print "Finished PART1"
+    mapper = Mapper(map_file)
+    print "Finished PART2"
+    routes = read_routes(lines_file)
+    print "Finished PART3"
+    vehicles = read_vehicles(database, query_no)
+    print "Finished PART4"
+    
+    grids = make_empty_grids_dict()
+    process_routes(routes, grids)
+    conn = pickle.load(open(connector_file, 'rb'))
+    
     for card in cards:
-        print card.get_no(), card.time_sequence
-        break
+        print card.get_no()
+        match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)
 
 
 

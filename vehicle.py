@@ -64,7 +64,7 @@ class Vehicle:
                 continue
             new_vlist.append(self.vlist[i])
         new_vlist.append(self.vlist[-1])
-        return Vehicle(new_vlist, self.get_no)
+        return Vehicle(new_vlist, self.get_no())
         
     def plot(self, start, end, *args1, **args2):
         """

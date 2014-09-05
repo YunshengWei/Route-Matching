@@ -28,7 +28,7 @@ class Card:
         new_time_sequence = []
         # Should I skip the first timestamp?
         if len(self.time_sequence) > 0:
-            new_time_sequence = self.time_sequence[0]
+            new_time_sequence = [self.time_sequence[0]]
         for i in xrange(1, len(self.time_sequence)):
             if self.time_sequence[i] - self.time_sequence[i - 1] >= time_width:
                 new_time_sequence.append(self.time_sequence[i])
