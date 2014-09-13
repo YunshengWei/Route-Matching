@@ -11,9 +11,9 @@ import matplotlib.pyplot as plt
 
 from configuration import map_file, \
 lines_file, connector_file, between_card_time, \
-database, card_query_tuple, query_no
+database, card_query_tuple, query_no, dist_card_time
 from read_data import read_cards, read_routes, read_vehicles
-from helper import grid_index, make_empty_grids_dict, process_routes
+from helper import grid_index, make_empty_grids_dict, process_routes, dist
 from mapper import Mapper
 import connector
 
@@ -62,23 +62,26 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
     for vehicle in cand_vehicles:
         match_num = 0
         locations = vehicle.get_locations_at_timestamps(card.get_time_sequence())
-#        x, y = zip(*filter(None, locations))
-#        plt.figure()
-        #vehicle.plot(0, len(vehicle))
-#        plt.plot(x, y, 'gs')
-#        for route_no in route_nos:
-#            route = routes.get_route(route_no)
-#            route.plot(0, len(route), 'ro')
+        x, y = zip(*filter(None, locations))
+        plt.figure()
+        vehicle.plot(0, len(vehicle))
+        plt.plot(x, y, 'gs')
+        for route_no in list(route_nos)[:1]:
+            route = routes.get_route(route_no)
+            route.plot(0, len(route), 'ro')
             
-#        plt.show()
+        plt.show()
+        last_location = (0, 0)
         for location in locations:
             if location == None:
                 continue
             gid = grid_index(location)
-            for route_no in route_nos:
-                if grids[gid[0]][gid[1]].has_key(route_no):
+            for route_no in list(route_nos)[:1]:
+                if grids[gid[0]][gid[1]].get(route_no, set()) \
+                and dist(location, last_location) > dist_card_time:
                     match_num += 1
-                    break
+                    #break
+            last_location = location
             
         ratio = match_num / float(len(card))
         print vehicle.get_no(), match_num, '/', len(card)
@@ -89,19 +92,27 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
 
 
 if __name__ == "__main__":
+    conn = pickle.load(open(connector_file, 'rb'))
     cards = read_cards(database, card_query_tuple)
     print "Finished PART1"
     mapper = Mapper(map_file)
     print "Finished PART2"
     routes = read_routes(lines_file)
     print "Finished PART3"
-    vehicles = read_vehicles(database, query_no)
+
+    cand_vehicles_nos = set()
+    for card in cards:
+        route_nos = mapper.get_lineid_from_statid(card.get_no()[1])
+        for route_no in route_nos:    
+            cand_vehicles_nos |= conn.get_cands(route_no)
+    query_no_tmp = list(cand_vehicles_nos)
+
+    vehicles = read_vehicles(database, query_no_tmp)
     print "Finished PART4"
     
     grids = make_empty_grids_dict()
     process_routes(routes, grids)
-    conn = pickle.load(open(connector_file, 'rb'))
-    
+  
     for card in cards:
         print card.get_no()
         max_ratio, vehicle = match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)

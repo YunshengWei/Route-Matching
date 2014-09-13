@@ -36,10 +36,9 @@ lines_file =  os.path.normpath("../data/lines.csv")
 connector_file = os.path.normpath("../data/connector.dat")
 
 # "all" or [no_1, no_2]
-query_no = "all"#["013817297592", "013817092369"]
-
+query_no = "all"
 # "all" or [(posid, statid), (posid, statid)]
-card_query_tuple = "all"#[(u'11150197', u'73530')]
+card_query_tuple = [(u'11100162', u'13733')]
 
 ############################################
 # Deprecated
@@ -70,9 +69,11 @@ split_pts_int = 10
 # time length used to help decide whether vehicle is at stop (measured in seconds)
 stop_time = 60
 # time used to split card time (measured in seconds)
-between_card_time = 60
+between_card_time = 40
 # outlier distance threshold
-outlier_dist_thres = 0.5
+outlier_dist_thres = 0.1
+# distance between card time
+dist_card_time = 0.002
 
 
 debug_mode = False

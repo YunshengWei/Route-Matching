@@ -53,17 +53,25 @@ class Vehicle:
         """
         return a new vehicle with outlier removed
         """
-        if len(self.vlist) < 3:
+#        if len(self.vlist) < 3:
+#            return self
+#        new_vlist = [self.vlist[0]]
+#        for i in xrange(1, len(self.vlist) - 1):
+#            if dist(self.get_location(i), self.get_location(i-1)) > outlier_dist_thres \
+#            and dist(self.get_location(i), self.get_location(i+1)) > outlier_dist_thres:
+#                print ("remove outlier in %s" % self.get_no()), self.get_location(i-1), \
+#                self.get_location(i), self.get_location(i+1)
+#                continue
+#            new_vlist.append(self.vlist[i])
+#        new_vlist.append(self.vlist[-1])
+        
+        # Assume self.vlist[0] is not outlier and time is continuous.
+        if not self.vlist:
             return self
         new_vlist = [self.vlist[0]]
-        for i in xrange(1, len(self.vlist) - 1):
-            if dist(self.get_location(i), self.get_location(i-1)) > outlier_dist_thres \
-            and dist(self.get_location(i), self.get_location(i+1)) > outlier_dist_thres:
-                print ("remove outlier in %s" % self.get_no()), self.get_location(i-1), \
-                self.get_location(i), self.get_location(i+1)
-                continue
-            new_vlist.append(self.vlist[i])
-        new_vlist.append(self.vlist[-1])
+        for i in xrange(1, len(self.vlist)):
+            if dist(self.get_location(i), (new_vlist[-1][2], new_vlist[-1][1])) < outlier_dist_thres:
+                new_vlist.append(self.vlist[i])
         return Vehicle(new_vlist, self.get_no())
         
     def plot(self, start, end, *args1, **args2):

@@ -23,7 +23,7 @@ split_pts_int, stop_time, connector_file
 from matcher import Matcher
 from helper import dist, grid_index, \
 make_empty_grids_dict, process_routes, neighbor_id
-from read_date import read_vehicles, read_routes
+from read_data import read_vehicles, read_routes
 from connector import Connector
 
 #########################################################
