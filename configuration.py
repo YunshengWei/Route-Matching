@@ -38,7 +38,7 @@ connector_file = os.path.normpath("../data/connector.dat")
 # "all" or [no_1, no_2]
 query_no = "all"
 # "all" or [(posid, statid), (posid, statid)]
-card_query_tuple = "all"#[(u'11100162', u'13733')]
+card_query_tuple = [(u'11150449', u'73722')]
 
 ############################################
 # Deprecated

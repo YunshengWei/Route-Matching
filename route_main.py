@@ -25,6 +25,7 @@ from helper import dist, grid_index, \
 make_empty_grids_dict, process_routes, neighbor_id
 from read_data import read_vehicles, read_routes
 from connector import Connector
+from route import Routes
 
 #########################################################
 # Debug code
