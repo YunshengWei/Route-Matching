@@ -62,25 +62,25 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
     for vehicle in cand_vehicles:
         match_num = 0
         locations = vehicle.get_locations_at_timestamps(card.get_time_sequence())
-        x, y = zip(*filter(None, locations))
-        plt.figure()
-        vehicle.plot(0, len(vehicle))
-        plt.plot(x, y, 'gs')
-        for route_no in list(route_nos)[:1]:
-            route = routes.get_route(route_no)
-            route.plot(0, len(route), 'ro')
-            
-        plt.show()
+#        x, y = zip(*filter(None, locations))
+#        plt.figure()
+#        vehicle.plot(0, len(vehicle))
+#        plt.plot(x, y, 'gs')
+#        for route_no in list(route_nos)[:1]:
+#            route = routes.get_route(route_no)
+#            route.plot(0, len(route), 'ro')
+#            
+#        plt.show()
         last_location = (0, 0)
         for location in locations:
             if location == None:
                 continue
             gid = grid_index(location)
-            for route_no in list(route_nos)[:1]:
+            for route_no in route_nos:
                 if grids[gid[0]][gid[1]].get(route_no, set()) \
                 and dist(location, last_location) > dist_card_time:
                     match_num += 1
-                    #break
+                    break
             last_location = location
             
         ratio = match_num / float(len(card))

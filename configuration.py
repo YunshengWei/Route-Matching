@@ -38,7 +38,7 @@ connector_file = os.path.normpath("../data/connector.dat")
 # "all" or [no_1, no_2]
 query_no = "all"
 # "all" or [(posid, statid), (posid, statid)]
-card_query_tuple = [(u'11100162', u'13733')]
+card_query_tuple = "all"#[(u'11100162', u'13733')]
 
 ############################################
 # Deprecated
@@ -73,7 +73,7 @@ between_card_time = 40
 # outlier distance threshold
 outlier_dist_thres = 0.1
 # distance between card time
-dist_card_time = 0.002
+dist_card_time = 0.001
 
 
 debug_mode = False
