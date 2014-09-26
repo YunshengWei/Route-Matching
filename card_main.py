@@ -63,6 +63,7 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
     plt.close('all')
     for vehicle in cand_vehicles:
         match_num_1 = 0
+        best_offset = 0
         for offset in offsets:
             match_num = 0
             time_sequences = map(lambda x: x + offset, card.get_time_sequence())
