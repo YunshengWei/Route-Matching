@@ -17,7 +17,7 @@ database = os.path.normpath("../data/Route_Matching.db")
 
 # vehicles_file
 # first line should give name of columns
-vehicles_file = os.path.normpath("../data/gps-2014-3-26.txt")
+vehicles_file = os.path.normpath("../data/gps-2014-3-26-convert.txt")
 
 # map_file
 # skip first line
@@ -38,7 +38,7 @@ connector_file = os.path.normpath("../data/connector.dat")
 # "all" or [no_1, no_2]
 query_no = "all"
 # "all" or [(posid, statid), (posid, statid)]
-card_query_tuple = [(u'11150449', u'73722')]
+card_query_tuple = "all"
 
 ############################################
 # Deprecated
@@ -61,7 +61,7 @@ match_thres = 0.9
 # threshold of match used in subset_match
 match_thres_one = 0.9
 # distance of match
-match_dist = 0.01
+match_dist = 0.002
 # number of grids in neighborhood
 around_grid = 1
 # intervals between split points for one route (included)
@@ -74,7 +74,14 @@ between_card_time = 40
 outlier_dist_thres = 0.1
 # distance between card time
 dist_card_time = 0.001
-
+# distance from stop when swiping cards
+dist_stop = 0.002
+# max time offset (measured in seconds)
+max_time_offset = 300
+# offset step
+offset_step = 20
+offsets = [-max_time_offset + offset_step * i 
+           for i in xrange(int(2*max_time_offset/offset_step + 1))]
 
 debug_mode = False
 verbose = True

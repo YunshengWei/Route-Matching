@@ -13,9 +13,13 @@ to avoid circular imports.
 
 from math import sqrt, ceil
 from collections import defaultdict
+import datetime
+import matplotlib.pyplot as plt
 
 from configuration import min_long, grid_len_long, \
-min_lati, grid_len_lati, around_grid
+min_lati, grid_len_lati, around_grid, match_dist, \
+split_pts_int
+import configuration
 
 def dist(p1, p2):
     """
@@ -97,6 +101,82 @@ def binary_search(ele, l, key = lambda x: x):
         else:
             start = pivot + 1
     return ('interval', (end, start))
+    
+#def extract_time_series_from_vehicle(vehicle, routes):
+#    """
+#    extract time series from vehicle according to given routes.
+#    """
+#    # Use the naivest methods for now.
+#    # the same logic as split_vehicle_by_route
+#    all_split_ids = []
+#    for route in routes:
+#        split_ids = []
+#        for k, site in enumerate(route):
+#            last_dist = float('inf')
+#            last_id = -split_pts_int - 100
+#            for i in xrange(len(vehicle)):
+#                cur_dist = dist(vehicle.get_location(i), site)
+#                if cur_dist >= match_dist:
+#                    continue
+#                if i - last_id >= split_pts_int:
+#                    split_ids.append([vehicle.get_GpsTime(i), 
+#                                      route.get_no(), k])
+#                    last_dist = cur_dist    
+#                elif cur_dist <= last_dist:
+#                    split_ids[-1][0] = vehicle.get_GpsTime(i)
+#                    last_dist = cur_dist
+#                last_id = i
+#        
+#        split_ids.sort(key = lambda x:x[0])
+#        new_split_ids = []
+#        for i in xrange(0, len(split_ids) - 1):
+#            if split_ids[i][2] != split_ids[i + 1][2]:
+#                new_split_ids.append(split_ids[i])
+#        new_split_ids.append(split_ids[-1])
+#        split_ids = new_split_ids
+#                
+#        maxmins = []
+#        if split_ids[0][2] > split_ids[1][2]:
+#            maxmins.append((0, 'max'))
+#        if split_ids[0][2] < split_ids[1][2]:
+#            maxmins.append((0, 'min'))
+#        
+#        for i in xrange(1, len(split_ids) - 1):
+#            if split_ids[i][2] > split_ids[i + 1][2] and split_ids[i] > split_ids[i - 1][2]:
+#                maxmins.append((i, 'max'))
+#            if split_ids[i][2] < split_ids[i + 1][2] and split_ids[i] < split_ids[i - 1][2]:
+#                maxmins.append((i, 'min'))
+#                
+#        if split_ids[-1][2] < split_ids[-2][2]:
+#            maxmins.append((len(split_ids) - 1, 'min'))
+#        if split_ids[-1][2] > split_ids[-2][2]:
+#            maxmins.append((len(split_ids) - 1, 'max'))
+#
+#        splits =                 
+#        all_split_ids += split_ids
+#
+#    all_split_ids.sort(key = lambda x: x[0])
+#    
+#    return all_split_ids
+#    
+#    
+#if __name__ == "__main__":
+#    vehicles = read_data.read_vehicles(configuration.database, ['013661842734'])
+#    routes = read_data.read_routes(configuration.lines_file)
+#    routes = [routes.get_route('14'), routes.get_route('15')]
+#    for vehicle in vehicles:
+#        ts = extract_time_series_from_vehicle(vehicle, routes[:1])
+#        for a,b,c in ts:
+#            print datetime.datetime.utcfromtimestamp(a).strftime("%Y-%m-%d %H:%M:%S"),b,c
+#        vehicle.plot(0, 4999)
+#        plt.hold(True)
+#        vehicle.plot(5000, 9000, 'ro')
+        
+    
+    
+    
+    
+    
     
     
     

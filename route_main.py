@@ -303,7 +303,7 @@ if __name__ == "__main__":
             print "Elapsed time : %s" % (time.clock()- t0)
             print "-" * 40
     connector = Connector(matchers)
-    pickle.dump(connector, open(connector_file, 'wb'))
+    #pickle.dump(connector, open(connector_file, 'wb'))
     
 #    i = 0
 #    plt.figure()
