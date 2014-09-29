@@ -82,6 +82,10 @@ max_time_offset = 300
 offset_step = 20
 offsets = [-max_time_offset + offset_step * i 
            for i in xrange(int(2*max_time_offset/offset_step + 1))]
+# ratio #1 > #2
+thres_ratio = 0.1
+# min_ratio
+min_ratio = 0.7
 
 debug_mode = False
 verbose = True

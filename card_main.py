@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from configuration import map_file, \
 lines_file, connector_file, between_card_time, \
 database, card_query_tuple, query_no, dist_card_time, \
-dist_stop, offsets
+dist_stop, offsets, thres_ratio, min_ratio
 from read_data import read_cards, read_routes, read_vehicles
 from helper import grid_index, make_empty_grids_dict, process_routes, dist
 from mapper import Mapper
@@ -57,10 +57,8 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
                      for vehicle_no in cand_vehicles_nos]
                 
     card = card.get_simplified_card(between_card_time)
-    max_max_num = 0
-    max_vehicle = None
-    best_best_offset = 0
-    plt.close('all')
+    #plt.close('all')
+    match_results = []
     for vehicle in cand_vehicles:
         match_num_1 = 0
         best_offset = 0
@@ -98,12 +96,18 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
                 best_offset = offset
             
         print vehicle.get_no(), match_num_1, '/', len(card), best_offset
-        if match_num_1 > max_max_num:
-            max_max_num = match_num_1
-            max_vehicle = vehicle
-            best_best_offset = best_offset
-    return max_max_num, len(card), max_vehicle, best_best_offset
-
+        match_results.append((match_num_1, vehicle, best_offset))
+    
+    match_results.sort(key = lambda x: x[0], reverse = True)
+    if not match_results:
+        return ("No Match",)
+    if (float(match_results[0][0]) / len(card)) >= min_ratio:
+        if (len(match_results) == 1 or match_results[0][0] > (1+thres_ratio) * match_results[1][0]):
+            return "Accurate Match", match_results[0][0], '/', len(card), match_results[0][1].get_no(), match_results[0][2]
+        else:
+            return "Inaccurate Match", match_results[0][0], '/', len(card), match_results[0][1].get_no(), match_results[0][2]
+    else:
+        return "Low Match", match_results[0][0], '/', len(card), match_results[0][1].get_no(), match_results[0][2]
 
 if __name__ == "__main__":
     conn = pickle.load(open(connector_file, 'rb'))
@@ -117,21 +121,26 @@ if __name__ == "__main__":
         for route_no in route_nos:    
             cand_vehicles_nos |= conn.get_cands(route_no)
     query_no_tmp = list(cand_vehicles_nos)
-
+    
     vehicles = read_vehicles(database, query_no_tmp)
     
     grids = make_empty_grids_dict()
     process_routes(routes, grids)
   
+    sts = {"No Match" : 0,
+           "Accurate Match" : 0,
+           "Inaccurate Match" : 0,
+		   "Low Match" : 0}
     for card in cards:
         print card.get_no()
-        max_max_num, num_cards, vehicle, offset = match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)
-        if vehicle == None:
-            print "No match"
-        else:
-            print "Best match:\n", max_max_num, '/', num_cards, vehicle.get_no(), offset
+        ret = match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)
+        print ' '.join(map(lambda x: str(x), ret))
+        sts[ret[0]] += 1
         #_ = raw_input("press any key to continue")
-
+    
+    print "-------------------------------------------"
+    for key, value in sts.iteritems():
+        print key, ':', value
 
 
 
