@@ -18,18 +18,18 @@ def read_vehicles(database, query_no):
     cursor = conn.cursor()
     # database should have index on Sim
     if query_no == "all":
-        cursor.execute("SELECT DISTINCT sim FROM vehicles")
-        all_sims = cursor.fetchall()
+        cursor.execute("SELECT DISTINCT id FROM vehicles")
+        all_ids = cursor.fetchall()
     else:
-        all_sims = [(no, ) for no in query_no]
+        all_ids = [(no, ) for no in query_no]
     vehicles = Vehicles()
-    for sim in all_sims:
+    for ID in all_ids:
         # Order by Id?
-        cursor.execute("""SELECT id, latitude, longitude, gpstime 
+        cursor.execute("""SELECT gpstime, latitude, longitude 
                           FROM vehicles
-                          WHERE sim = ? ORDER BY gpstime ASC""", sim)
+                          WHERE id = ? ORDER BY gpstime ASC""", ID)
         results = cursor.fetchall()
-        vehicle = Vehicle(results, sim[0])
+        vehicle = Vehicle(results, ID[0])
         vehicle = vehicle.denoise()
         vehicles.add(vehicle)
     cursor.close()

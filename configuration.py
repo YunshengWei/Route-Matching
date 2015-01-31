@@ -13,27 +13,27 @@ Modify this file to change some constants.
 import os
 
 # database should have index on Sim
-database = os.path.normpath("../data/Route_Matching.db")
+database = os.path.normpath("../data_2015-01-27/Route_Matching.db")
 
 # vehicles_file
 # first line should give name of columns
-vehicles_file = os.path.normpath("../data/gps-2014-3-26-convert.txt")
+vehicles_file = os.path.normpath("../data_2015-01-27/gps-2014-3-26-convert.txt")
 
 # map_file
 # skip first line
-map_file = os.path.normpath("../data/stat-line-map.txt")
+map_file = os.path.normpath("../data_2015-01-27/stat-line-map.txt")
 
 # cards_file
 # Do NOT need to skip the first line!
-cards_file = os.path.normpath("../data/data.txt")
+cards_file = os.path.normpath("../data_2015-01-27/data.txt")
 
 # format of lines_file
 # longitude should be before latitude!
 # Skip the first line!
-lines_file =  os.path.normpath("../data/lines.csv")
+lines_file =  os.path.normpath("../data_2015-01-27/busline-2014.csv")
 
 # connector_file
-connector_file = os.path.normpath("../data/connector.dat")
+connector_file = os.path.normpath("../data_2015-01-27/connector.dat")
 
 # "all" or [no_1, no_2]
 query_no = "all"

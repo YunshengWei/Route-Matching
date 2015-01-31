@@ -261,7 +261,7 @@ def match_route_dp(vehicle, routes, grids):
                         valid[i - 1] = True
                         aux[i] = (aux[s][0] + 1, aux[s][1] + routes.get_route(route_no).length())
                         back_points[i] = (s, k, route_no)
-    matcher = Matcher(vehicle)
+    matcher = Matcher(vehicle, grids)
     i = len(vehicle) - 1
     s = len(back_points) - 1
     while back_points[s] != None:
@@ -291,18 +291,20 @@ if __name__ == "__main__":
     matchers = []
     for vehicle in vehicles:
         try:
-            print "vehicle %s" % vehicle.get_no()
-            t0 = time.clock()
+            #print "vehicle %s" % vehicle.get_no()
+            #t0 = time.clock()
             matcher = match_route_dp(vehicle, routes, grids)
-            print matcher
+            #print matcher
             #matcher.plot()
+            matcher.niceprint()
             matchers.append(matcher)
         except:
             print traceback.format_exc()
         finally:
-            print "Elapsed time : %s" % (time.clock()- t0)
-            print "-" * 40
-    connector = Connector(matchers)
+            pass
+            #print "Elapsed time : %s" % (time.clock()- t0)
+            #print "-" * 40
+    #connector = Connector(matchers)
     #pickle.dump(connector, open(connector_file, 'wb'))
     
 #    i = 0

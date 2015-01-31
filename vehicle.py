@@ -39,12 +39,9 @@ class Vehicle:
     
     def get_longitude(self, i):
         return self.vlist[i][2]
-        
-    def get_id(self, i):
-        return self.vlist[i][0]
     
     def get_GpsTime(self, i):
-        return self.vlist[i][3]
+        return self.vlist[i][0]
     
     def __iter__(self):
         return iter(self.vlist)
