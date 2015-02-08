@@ -15,7 +15,6 @@ class Matcher:
     def __init__(self, vehicle, grids):
         self.vehicle = vehicle
         self.mlist = []
-        self.grids = grids
         
     def append(self, start, end, route):
         self.insert(len(self.mlist), start, end, route)
@@ -41,13 +40,13 @@ class Matcher:
         for i, (start, end, route) in enumerate(self.mlist, 1):
             plt.subplot(row, col, i)
             self.vehicle.plot(start, end + 1, 'b-')
-            route.plot(0, len(route), 'ro')
+            route.plot(0, len(route), 'r+')
         plt.show()
     
-    def niceprint(self):
+    def niceprint(self, grids):
         for start, end, route in self.mlist:
-            s = ['' for _ in xrange(len(route) + 2)]
-            res = vehicle_site_time(self.vehicle, start, end, route, self.grids)
+            s = ['' for _ in xrange(len(route.site_backup) + 2)]
+            res = vehicle_site_time(self.vehicle, start, end, route, grids)
             s[0], s[1] = self.vehicle.get_no(), route.get_no()
             for site_no, time in res:
                 s[site_no + 2] = datetime.utcfromtimestamp(time).strftime("%Y-%m-%d %H:%M:%S")
@@ -59,14 +58,14 @@ def vehicle_site_time(vehicle, start, end, route, grids):
     include start, end
     return [(site_no, time), (site_no, time)]
     """
-    times = [None for _ in xrange(len(route))]
-    dists = [100000 for _ in xrange(len(route))]
+    times = [None for _ in xrange(route.site_count())]
+    dists = [100000 for _ in xrange(route.site_count())]
     for i in xrange(start, end + 1):
         loc = vehicle.get_location(i)
         idx, idy = grid_index(loc)
         sites = grids[idx][idy].get(route.get_no(), set())
         for site in sites:
-            d = dist(route.get_location(site), vehicle.get_location(i))
+            d = dist(route.site_location(site), vehicle.get_location(i))
             if d <= dists[site]:
                 dists[site] = d
                 times[site] = vehicle.get_GpsTime(i)

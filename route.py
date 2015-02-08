@@ -16,6 +16,7 @@ class Route:
         """
         self.route_no = route_no
         self.sites = sites
+        self.site_backup = self.sites
         self.total_len = None
 
     def get_no(self):
@@ -26,6 +27,12 @@ class Route:
         return as (longitude, latitude)
         """
         return (self.get_longitude(i), self.get_latitude(i))
+    
+    def site_location(self, i):
+        return (self.site_backup[i][0], self.site_backup[i][1])
+
+    def site_count(self):
+        return len(self.site_backup)
     
     def get_latitude(self, i):
         return self.sites[i][1]
@@ -55,6 +62,8 @@ class Route:
         """    
         x, y = zip(*[self.get_location(i) for i in xrange(start, end)]) 
         plt.plot(x, y, *args1, **args2)
+        x, y = zip(*[self.site_location(i) for i in xrange(len(self.site_backup))])        
+        plt.plot(x, y, 'ro', markersize = 7)
         
     def length(self):
         """
@@ -65,6 +74,11 @@ class Route:
             self.total_len = sum(dist(self.get_location(i), self.get_location(i - 1))
                                  for i in xrange(1, len(self)))
         return self.total_len
+    
+    def add_supplement_info(self, sites):
+        self.site_backup = self.sites
+        self.sites = sites
+    
 
 class Routes:
     def __init__(self):

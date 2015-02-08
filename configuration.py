@@ -31,12 +31,13 @@ cards_file = os.path.normpath("../data_2015-01-27/data.txt")
 # longitude should be before latitude!
 # Skip the first line!
 lines_file =  os.path.normpath("../data_2015-01-27/busline-2014.csv")
+lines_file_supplement = os.path.normpath("../data_2015-01-27/BusLinePoint-2014.csv")
 
 # connector_file
 connector_file = os.path.normpath("../data_2015-01-27/connector.dat")
 
 # "all" or [no_1, no_2]
-query_no = "all"
+query_no = ["BD5416", "D87690"]
 # "all" or [(posid, statid), (posid, statid)]
 card_query_tuple = "all"
 

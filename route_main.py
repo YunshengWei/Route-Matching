@@ -18,12 +18,12 @@ import configuration
 from configuration import min_long, min_lati, \
 max_long, max_lati, grid_len_long, grid_len_lati, \
 match_thres, around_grid, match_dist, match_thres_one, \
-split_pts_int, stop_time, connector_file
+split_pts_int, stop_time, connector_file, lines_file_supplement
 
 from matcher import Matcher
 from helper import dist, grid_index, \
 make_empty_grids_dict, process_routes, neighbor_id
-from read_data import read_vehicles, read_routes
+from read_data import read_vehicles, read_routes, read_routes_supplement
 from connector import Connector
 from route import Routes
 
@@ -284,8 +284,10 @@ def error_handling():
 
 if __name__ == "__main__":
     routes = read_routes(configuration.lines_file)
-    grids = make_empty_grids_dict()
-    process_routes(routes, grids)
+    routes = read_routes_supplement(routes, configuration.lines_file_supplement)
+    grids1 = make_empty_grids_dict()
+    grids2 = make_empty_grids_dict()
+    process_routes(routes, grids1, grids2)
     vehicles = read_vehicles(configuration.database, configuration.query_no)
     plt.close('all')
     matchers = []
@@ -293,10 +295,10 @@ if __name__ == "__main__":
         try:
             #print "vehicle %s" % vehicle.get_no()
             #t0 = time.clock()
-            matcher = match_route_dp(vehicle, routes, grids)
+            matcher = match_route_dp(vehicle, routes, grids1)
             #print matcher
             #matcher.plot()
-            matcher.niceprint()
+            matcher.niceprint(grids2)
             matchers.append(matcher)
         except:
             print traceback.format_exc()

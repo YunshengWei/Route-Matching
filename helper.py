@@ -44,7 +44,7 @@ def make_empty_grids_dict():
     grids = defaultdict(lambda : defaultdict(dict))
     return grids
 
-def process_routes(routes, grid):
+def process_routes(routes, grid1, grid2):
     """
     put routes in corresponding grids
     """
@@ -53,8 +53,13 @@ def process_routes(routes, grid):
         for i, site in enumerate(route):      
             idx, idy = grid_index(site)
             for longi, lati in neighbor_id(idx, idy):
-                grid[longi][lati].setdefault(route_no, set())
-                grid[longi][lati][route_no].add(i)
+                grid1[longi][lati].setdefault(route_no, set())
+                grid1[longi][lati][route_no].add(i)
+        for i, site in enumerate(route.site_backup):      
+            idx, idy = grid_index(site)
+            for longi, lati in neighbor_id(idx, idy):
+                grid2[longi][lati].setdefault(route_no, set())
+                grid2[longi][lati][route_no].add(i)
 
 def neighbor_id(id_x, id_y):
     """

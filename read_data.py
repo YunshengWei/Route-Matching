@@ -54,6 +54,19 @@ def read_routes(route_file):
             routes.add(route)
     return routes
     
+def read_routes_supplement(routes, route_supp_file):
+    with open(route_supp_file, 'r') as f:
+        # the first line is title        
+        f.readline()
+        for line in f:
+            line = line.strip()
+            if not line: continue
+            parts = filter(None, line.split(','))            
+            route_no = parts[0]
+            sites = [tuple(map(float, s.split('|'))) for s in parts[1:]]
+            routes.get_route(route_no).add_supplement_info(sites)
+    return routes
+    
 def read_cards(database, query_tuple):
     """
     read card data
