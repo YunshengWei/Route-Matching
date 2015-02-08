@@ -297,7 +297,7 @@ if __name__ == "__main__":
             #t0 = time.clock()
             matcher = match_route_dp(vehicle, routes, grids1)
             #print matcher
-            #matcher.plot()
+            matcher.plot()
             matcher.niceprint(grids2)
             matchers.append(matcher)
         except:

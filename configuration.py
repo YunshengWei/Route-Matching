@@ -37,7 +37,7 @@ lines_file_supplement = os.path.normpath("../data_2015-01-27/BusLinePoint-2014.c
 connector_file = os.path.normpath("../data_2015-01-27/connector.dat")
 
 # "all" or [no_1, no_2]
-query_no = ["BD5416", "D87690"]
+query_no = ["B36281"]
 # "all" or [(posid, statid), (posid, statid)]
 card_query_tuple = "all"
 
@@ -60,7 +60,7 @@ grid_len_lati = 0.004
 # threshold of match used in filter_by_grids
 match_thres = 0.9
 # threshold of match used in subset_match
-match_thres_one = 0.9
+match_thres_one = 0.85
 # distance of match
 match_dist = 0.002
 # number of grids in neighborhood
