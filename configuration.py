@@ -25,7 +25,7 @@ map_file = os.path.normpath("../data_2015-01-27/stat-line-map.txt")
 
 # cards_file
 # Do NOT need to skip the first line!
-cards_file = os.path.normpath("../data_2015-01-27/data.txt")
+cards_file = os.path.normpath("../data_2015-01-27/data-20140916.txt")
 
 # format of lines_file
 # longitude should be before latitude!
@@ -36,8 +36,11 @@ lines_file_supplement = os.path.normpath("../data_2015-01-27/BusLinePoint-2014.c
 # connector_file
 connector_file = os.path.normpath("../data_2015-01-27/connector.dat")
 
+# card_vehicle_map_file
+card_vehicle_map_file = os.path.normpath("../data_2015-01-27/card_vehicle_map.txt")
+
 # "all" or [no_1, no_2]
-query_no = ["B36281"]
+query_no = "all"
 # "all" or [(posid, statid), (posid, statid)]
 card_query_tuple = "all"
 

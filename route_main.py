@@ -297,7 +297,7 @@ if __name__ == "__main__":
             #t0 = time.clock()
             matcher = match_route_dp(vehicle, routes, grids1)
             #print matcher
-            matcher.plot()
+            #matcher.plot()
             matcher.niceprint(grids2)
             matchers.append(matcher)
         except:
@@ -306,8 +306,8 @@ if __name__ == "__main__":
             pass
             #print "Elapsed time : %s" % (time.clock()- t0)
             #print "-" * 40
-    #connector = Connector(matchers)
-    #pickle.dump(connector, open(connector_file, 'wb'))
+    connector = Connector(matchers)
+    pickle.dump(connector, open(connector_file, 'wb'))
     
 #    i = 0
 #    plt.figure()

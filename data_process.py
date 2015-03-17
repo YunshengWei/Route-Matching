@@ -81,3 +81,6 @@ def cards_to_database(database, cards_file):
     cursor.close()
     conn.commit()
     conn.close()
+
+if __name__ == "__main__":
+    cards_to_database(configuration.database, configuration.cards_file)

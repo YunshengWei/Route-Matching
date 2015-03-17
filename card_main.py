@@ -9,6 +9,7 @@ from __future__ import division
 import cPickle as pickle
 import matplotlib.pyplot as plt
 
+import configuration
 from configuration import map_file, \
 lines_file, connector_file, between_card_time, \
 database, card_query_tuple, query_no, dist_card_time, \
@@ -17,6 +18,7 @@ from read_data import read_cards, read_routes, read_vehicles
 from helper import grid_index, make_empty_grids_dict, process_routes, dist
 from mapper import Mapper
 import connector
+from card_vehicle_mapper import CardVehicleMapper
 
 #def time_seqs_match(ts, ts_list, interval_width):
 #    """
@@ -43,7 +45,7 @@ import connector
 #    return (index, ratios[index])
     
 
-def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
+def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles, cvmapper):
     """
     find the best match for the card
     """
@@ -100,7 +102,10 @@ def match_card_from_vehicles(card, mapper, connector, routes, grids, vehicles):
     
     match_results.sort(key = lambda x: x[0], reverse = True)
     if not match_results:
+        cvmapper.add_map(card.get_no(), None)
         return ("No Match",)
+    
+    cvmapper.add_map(card.get_no(), (match_results[0][1].get_no(), match_results[0][2]))
     if (float(match_results[0][0]) / len(card)) >= min_ratio:
         if (len(match_results) == 1 or match_results[0][0] > (1+thres_ratio) * match_results[1][0]):
             return "Accurate Match", match_results[0][0], '/', len(card), match_results[0][1].get_no(), match_results[0][2]
@@ -130,10 +135,13 @@ if __name__ == "__main__":
     sts = {"No Match" : 0,
            "Accurate Match" : 0,
            "Inaccurate Match" : 0,
-		   "Low Match" : 0}
+	     "Low Match" : 0}
+    
+    cvmapper = CardVehicleMapper()
+    
     for card in cards:
         print card.get_no()
-        ret = match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles)
+        ret = match_card_from_vehicles(card, mapper, conn, routes, grids, vehicles, cvmapper)
         print ' '.join(map(lambda x: str(x), ret))
         sts[ret[0]] += 1
         #_ = raw_input("press any key to continue")
@@ -142,5 +150,6 @@ if __name__ == "__main__":
     for key, value in sts.iteritems():
         print key, ':', value
 
+    pickle.dump(cvmapper, open(configuration.card_vehicle_map_file, 'wb'))
 
 
